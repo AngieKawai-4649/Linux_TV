@@ -121,4 +121,50 @@
       $ readelf -s libarib25.so | grep FILE  ライブラリを構成しているソースファイルを確認
       $ ldconfig -p | grep libarib25         ldキャッシュにlibarib25.soが組み込まれていることを確認
 
+## 【チューナーデバイス環境構築】
+
+  **[慶安 fsusb2n(2期)]**  
+  **[さんぱくん外出]**
+
+    1.videoグループの作成
+      確認
+      $ cat /etc/group | grep video
+      無ければ作成
+      $ sudo groupadd video
+    2.使用ユーザーをvideoグループに追加
+      確認
+      $ groups
+      無ければ追加
+      $ sudo gpasswd -a ユーザー名 video
+    3.udevのルールを設定
+      確認
+      $ ls -l /lib/udev/rules.d /etc/udev/rules.d
+            ここに無い数字から始まるファイルを/etc/udev/rules.d に作成する
+      例:/etc/udev/rules.d/93-tuner.rules
+    4.USBデバイスの固定
+      USB機器を追加、取り外しを行うとチューナーデバイスのUSBパスが変わってしまうので
+       チューナーを接続しているUSBポートの物理的な場所に対してチューナーデバイス名称を付ける
+      確認
+      $ lsusb    各チューナーデバイスのUSBパスを調べる
+      $ udevadm info -n /dev/bus デバイスパス -q path
+      例 $ udevadm info -n /dev/bus/usb/001/005 -q path
+      出力値例
+     /devices/pci0000:00/0000:00:08.1/0000:05:00.3/usb1/1-4/1-4.1 が物理的な場所である
+     rulesファイルでDEVPATHに指定する
+     SYMLINKで指定した名称で /devにデバイスのシンボリックリンクが作成されるのでmirakurun tuners.ymlでそのデバイス名称を使用する
+     ATTRを調べる例 $ udevadm info -a -p `udevadm info -q path -n /dev/bus/usb/001/005`
+
+**[93-tuner.rulesファイルの内容例]**  
+\# FSUSB2N  
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0511", ATTRS{idProduct}=="0029", DEVPATH=="/devices/pci0000:00/0000:00:08.1/0000:04:00.4/usb3/3-2/3-2.1", MODE="0664", GROUP="video", SYMLINK+="FSUSB2N_1"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0511", ATTRS{idProduct}=="0029", DEVPATH=="/devices/pci0000:00/0000:00:08.1/0000:04:00.4/usb3/3-2/3-2.2", MODE="0664", GROUP="video", SYMLINK+="FSUSB2N_2"
+\# さんぱくん  
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0511", ATTRS{idProduct}=="0045", DEVPATH=="/devices/pci0000:00/0000:00:08.1/0000:04:00.4/usb3/3-2/3-2.3", MODE="0664", GROUP="video", SYMLINK+="SANPAKUN_1"
+SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0511", ATTRS{idProduct}=="0045", DEVPATH=="/devices/pci0000:00/0000:00:08.1/0000:04:00.4/usb3/3-2/3-2.4", MODE="0664", GROUP="video", SYMLINK+="SANPAKUN_2"
+
+    5.ファイル保存後、ルールを反映
+      $ sudo udevadm control --reload
+    6.リブート後、デバイスを確認する
+      $ ls /dev
+
 
