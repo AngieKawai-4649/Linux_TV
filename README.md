@@ -77,8 +77,8 @@
 
 ## 【ライブラリのリンク】
     Makefile の LDFLAGS または LIBS に -larib25 等と記載してあるが、これは  
-    -l:ライブラリファイルを指定 この場合はarib25の前にlibを付け、libarib25... というライブラリファイルをライブラリキャッシュから探し出し  
-       undefined symbolを解決しに行く
+    -l:ライブラリファイルを指定 この場合はarib25の前にlibを付け、libarib25... というライブラリファイルをLD_LIBRARY_PATH、  
+       ライブラリキャッシュの順に探しundefined symbolを解決しに行く
     因みに
     -L:ライブラリパスを指定
     例：-L/opt/work/lib
@@ -91,3 +91,34 @@
     呼び出しているライブラリ -> 呼び出されているライブラリの順で記載しなければならない
     正しくは以下とする
     LDFLAGS=-larib25 `pkg-config libpcsclite --libs`
+
+## 【柔らかいヤツ】
+  割愛
+
+## 【arib25】
+  b25復号化する為のライブラリおよびロードモジュール  
+  tunerアプリでb25解除する場合にセットアップする  
+  mirakurun側(arib-b25-stream-test)で解除する場合は必要無いがtunerアプリのコンパイル時に  
+  ヘッダファイルが必要となる可能性があるので導入する
+
+    1.ソースファイル一式を取得
+      cd /opt/TV_app/
+      $ git clone https://github.com/AngieKawai-4649/libarib25.git
+      またはlibarib25-master.zipを解凍
+    2.ビルド
+    2.1 共有ライブラリのビルド
+      $ cd /opt/TV_app/libarib25/src
+      $ make -f Make_lib
+      $ sudo make -f Make_lib install
+    2.2 ロードモジュールのビルド
+      $ cd /opt/TV_app/libarib25/src
+      $ make -f Make_exe [オプション]
+      オプションについては Make_exeのコメント欄を参照
+      $ sudo make -f Make_exe install
+    3.確認
+      $ ldd b25                              リンクされた共有ライブラリを確認
+      $ ldd libarib25.so                     リンクされた共有ライブラリを確認
+      $ readelf -s libarib25.so | grep FILE  ライブラリを構成しているソースファイルを確認
+      $ ldconfig -p | grep libarib25         ldキャッシュにlibarib25.soが組み込まれていることを確認
+
+
