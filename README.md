@@ -104,7 +104,9 @@
     1.ソースファイル一式を取得
       cd /opt/TV_app/
       $ git clone https://github.com/AngieKawai-4649/libarib25.git
-      またはlibarib25-master.zipを解凍
+      または
+      $ curl -OL https://github.com/AngieKawai-4649/libarib25/releases/download/master/master_src.tar.gz
+      を解凍
     2.ビルド
     2.1 共有ライブラリのビルド
       $ cd /opt/TV_app/libarib25/src
