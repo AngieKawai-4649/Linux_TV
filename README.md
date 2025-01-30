@@ -340,7 +340,39 @@ EPGStationで使用する為のセットアップを行う
           ログオフ
           MariaDB [(none)]> exit or quit or Ctrl+d
     2.1.2 文字コード(utf8mb4)設定
-        
+          DBサービス停止
+            # systemctl stop mariadb
+          設定ファイル修正
+          [DBサーバ設定ファイル]
+            /etc/mysql/mariadb.conf.d/50-server.cnf
+          [設定値]
+          [カテゴリ:mysqld]
+            character-set-server  = utf8mb4
+            collation-server      = utf8mb4_general_ci
+          ※expire_logs_daysも合わせて修正
+          [カテゴリ:mysqld]
+            expire_logs_days = 1
+          [DBクライアント設定ファイル]
+            /etc/mysql/mariadb.conf.d/50-client.cnf
+          [設定値]
+          [カテゴリ:[client-mariadb]
+            default-character-set = utf8mb4
+          確認
+          mariadbサービスを起動 (systemctl start mariadb) DBにログオンし文字コードを確認する
+    2.2 データベース作成
+        PGStationで使用するデータベースをepgstation_dbという名称で作成する
+        [構文]  (SQLには大文字小文字の区別は無い)
+              CREATE DATABASE データベース名 [CHARACTER SET 文字コード][COLLATE 照合順序];
+        [作成]
+              MariaDB [(none)]> create database epgstation_db;
+        [確認]
+              MariaDB [(none)]> show databases;
+        [削除]
+              MariaDB [(none)]> drop database epgstation_db;
+        [DBへ接続]
+             MariaDB [(none)]> use epgstation_db;
+        [切り替え]
+             MariaDB [(none)]> CONNECT epgstation_db;
 
 ## 【EPGstation】
     1.EPGstation ファイルの取得
