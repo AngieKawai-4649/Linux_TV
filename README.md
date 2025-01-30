@@ -323,6 +323,25 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     7.apiガイド
        localhost:40772/swagger-ui/?url=/api/docs
 
+## 【mariadb】
+EPGStationで使用する為のセットアップを行う
+
+    1.インストール
+      $ sudo apt install mariadb-server
+      または synaptic パッケージマネージャーを使用しインストール
+      バージョン確認
+      $ mysql --version
+    2.設定
+    2.1 文字コード設定(utf8mb4)
+    2.1.1 文字コード確認
+          データースにルートでログオンする
+          # mysql -u root -p  (パスワードは入れなくて良い)
+          MariaDB [(none)]> show variables like "chara%";
+          ログオフ
+          MariaDB [(none)]> exit or quit or Ctrl+d
+    2.1.2 文字コード(utf8mb4)設定
+        
+
 ## 【EPGstation】
     1.EPGstation ファイルの取得
       $ cd /opt/TV_app
