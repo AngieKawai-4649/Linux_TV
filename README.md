@@ -469,4 +469,37 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
       $ systemd-analyze plot > systemd.svg
       systemd.svg をブラウザにドラッグ＆ドロップする
 
+## 【vlc or smplayer】
+  プレイリスト(拡張子m3u8)を作成し、mirakurun httpストリーム配信URLを指定することで  
+  vlc または smplayer を使用しチャンネルを切り替えてTVを視聴するようなことができる  
+  playlist_GRBSCS.m3u8を参照
 
+    1. IPアドレス
+       mirakurunと同一PCで視聴: localhost
+       別PCまたはスマホでネットワーク越しに視聴: mirakurunをインストールしているPCのIPアドレス
+
+    2.プレイリストフォーマット
+       チャンネルを指定
+         http://mirakurunが稼働しているPCのIPアドレス:ポート番号/api/channels/GR or BS or CS/チャンネル/stream
+       サービスIDを指定
+         http://mirakurunが稼働しているPCのIPアドレス:ポート番号/api/channels/GR or BS or CS/チャンネル/services/sid/stream
+
+        例：
+        #EXTINF:-1,NHK総合１・東京
+        http://localhost:40772/api/channels/GR/27/services/1024/stream
+        #EXTINF:-1,東京MX1
+        http://localhost:40772/api/channels/GR/16/services/23608/stream
+        #EXTINF:-1,NHK BS1
+        http://localhost:40772/api/channels/BS/BS15_0/stream
+        #EXTINF:-1,BS10 スターチャンネル
+        http://localhost:40772/api/channels/BS/BS15_1/stream
+        #EXTINF:-1,BS10
+        http://localhost:40772/api/channels/BS/BS15_2/stream
+        #EXTINF:-1,放送大学231
+        http://localhost:40772/api/channels/BS/BS13_2/services/231/stream
+        #EXTINF:-1,Dlife
+        http://localhost:40772/api/channels/CS/CS22/services/312/stream
+
+**注意：**
+チャンネル名称 (BS03_1 CS22等)はtunerアプリのチャンネル定義ファイル(bscs_ch.conf)と  
+mirakurunのチャンネル定義ファイル(channels.yml)で一致させること  
