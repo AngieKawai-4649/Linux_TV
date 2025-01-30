@@ -373,6 +373,28 @@ EPGStationで使用する為のセットアップを行う
              MariaDB [(none)]> use epgstation_db;
         [切り替え]
              MariaDB [(none)]> CONNECT epgstation_db;
+    2.3 DBユーザーの作成
+        EPGStationで使用するDBユーザーをepgstationという名称で作成する
+        [構文]
+              CREATE USER 'ユーザー名'@'ホスト名' IDENTIFIED BY 'パスワード';
+        [作成]
+              MariaDB [(none)]> create user epgstation@localhost identified by 'epgstation';
+              (パスワードは ' で囲む)
+        [確認]
+             MariaDB [(none)]> SELECT user,host FROM mysql.user;
+        [削除]
+             MariaDB [(none)]> drop user epgstation@localhost;
+    2.4 権限の付与
+        2.3で作成したユーザーに対して権限を与える
+        [構文]
+             GRANT [権限の種類] ON データベース名.テーブル名 TO 'ユーザー名'@'ホスト名' (WITH GRANT OPTION);
+        [権限付与]
+             MariaDB [(none)]> GRANT ALL PRIVILEGES ON epgstation_db.* to epgstation@localhost;
+        [確認]
+             MariaDB [(none)]> show grants for epgstation@localhost;
+
+
+
 
 ## 【EPGstation】
     1.EPGstation ファイルの取得
