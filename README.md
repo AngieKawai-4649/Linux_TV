@@ -98,8 +98,8 @@
 ## 【arib25】
   b25復号化する為のライブラリおよびロードモジュール  
   tunerアプリでb25解除する場合にセットアップする  
-  mirakurun側(arib-b25-stream-test)で解除する場合は必要無いがtunerアプリのコンパイル時に  
-  ヘッダファイルが必要となる可能性があるので導入する
+  mirakurun側(arib-b25-stream-test)で解除する場合は  
+  arib-b25-stream-testにb25デコーダー機能が組み込まれているので導入する必要は無い
 
     1.ソースファイル一式を取得
       cd /opt/TV_app/
@@ -125,8 +125,8 @@
 
 ## 【チューナーデバイス環境構築】
 
-  **[慶安 fsusb2n(2期)]**  
-  **[さんぱくん外出]**
+**[慶安 fsusb2n(2期)]**  
+**[さんぱくん外出]**
 
     1.videoグループの作成
       確認
@@ -169,4 +169,32 @@ SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTRS{idVendor}=="0511", ATTRS{idP
     6.リブート後、デバイスを確認する
       $ ls /dev
 
+**[PT2 PT3 (dvb)]**
 
+PT2,PT3はデフォルトでdvbドライバーがインストールされるのでそれを使用する
+デフォルトのデバイス割当は以下となっている
+- PT2  BS/CS:adapter0 2  地上波:adapter1 3
+- PT3  BS/CS:adapter0 1  地上波:adapter2 3
+
+**[デバイスの固定]**
+
+1PCにPT2とPT3を取り付けているとチューナーデバイスがかち合ってしまいブートする度に割当が異なるのでデバイスを固定する  
+実際の割当状況を /var/log/kern.log で確認できる  
+- earth_pt1
+- earth_pt3
+
+デバイス場所
+
+    $ ls /dev/dvb  
+      adapter0  adapter1  adapter2  adapter3  adapter4  adapter5  adapter6  adapter7 ...
+
+固定方法
+
+    /etc/modprobe.d/options-dvb.conf を作成し以下を記述する
+    衛星0 地上0 衛星1 地上1の順に指定  
+    options earth_pt1 adapter_nr=0,1,2,3
+    options earth_pt3 adapter_nr=4,5,6,7
+    この場合は PT2 0 2 がBS/CS 1 3 が地上波
+    PT3 4 6 がBS/CS 5 7 が地上波
+    となる
+    リブートして確認する
