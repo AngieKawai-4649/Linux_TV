@@ -234,3 +234,40 @@ PT2,PT3はデフォルトでdvbドライバーがインストールされるの�
       $ make [オプション]
       オプションについてはMakefileのコメントを参照
 
+## 【nodejs】
+mirakurun EPGStation をインストール前にnodejsをセットアップする
+- nodejs: サーバーサイドjavascript
+- npm:    Node Package Manager Nodejsのパッケージを管理するツール
+- n:      nodejs version管理ツール
+- pm2:    nodejs 上で稼働する各アプリケーションの動作を管理するツール
+
+**[セットアップ]**
+
+    1.nodejs npm をインストール
+      $ sudo apt install -y nodejs npm
+       または synaptic パッケージマネージャーでインストール
+    2.version確認
+      $ node -v
+      $ npm -v
+    3.version管理する場合 n を導入する
+      $ sudo npm install -g n
+    3.1 nodejs version 10 にする場合
+      $ sudo n 10
+    3.2 nodejs安定版にversion up する場合
+      $ sudo n stable
+    3.3 nodejs最新版にする場合
+      $ sudo n latest
+    3.4 nodejsのバージョンについて
+        mirakurun@3.9.0-rc.4
+        nodejs version v20でインストールエラーとなるのでv18以下にする
+    4.npmのversion up (任意)
+      $ sudo npm update -g npm
+    5.pm2のインストール
+      $ sudo npm install -g pm2
+
+
+
+
+
+
+  
