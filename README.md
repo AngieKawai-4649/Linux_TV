@@ -323,7 +323,79 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     7.apiガイド
        localhost:40772/swagger-ui/?url=/api/docs
 
+## 【EPGstation】
+    1.EPGstation ファイルの取得
+      $ cd /opt/TV_app
+      $ git clone https://github.com/l3tnun/EPGStation.git
+
+    2.導入 ( ver2 )
+       動作環境
+      Node.js 14.6.0 以上 ( sudo n 14.6.0 )
+      Mirakurun 3.2.0 以上
+      ffmpeg
+      Python 2.7, v3.5, v3.6, v3.7 or v3.8 node-gyp にて必要
+
+      $ cd /opt/TV_app/EPGStation
+      $ npm run all-install
+      $ npm run build
+
+    3.設定ファイルリネーム
+      $ cd /opt/TV_app/EPGStation/config
+      $ mv config.yml.template config.yml
+      $ mv enc-enhance.js.template enc-enhance.js
+      $ mv enc.js.template enc.js
+      $ mv epgUpdaterLogConfig.sample.yml epgUpdaterLogConfig.yml
+      $ mv operatorLogConfig.sample.yml operatorLogConfig.yml
+      $ mv serviceLogConfig.sample.yml serviceLogConfig.yml
+
+    4.config.yml ファイル編集
+
+    4.1  mariadb設定の該当箇所を書き換える
+      
+      dbtype: mysql
+      mysql:
+        host: localhost
+        port: 3306
+        user: epgstation
+        password: epgstation
+        database: epgstation_db
+        connectTimeout: 20000
+        connectionLimit: 10
+
+    4.2 ffmpegパス変更
+      ffmpeg: /usr/bin/ffmpeg
+      ffprobe: /usr/bin/ffprobe
+
+    4.3 Drop Log
+      Drop log を出力する場合
+      isEnabledDropCheck: true を追加する
+
+     上記以外に設定する場合は逆引きマニュアルを参照
+     https://github.com/l3tnun/EPGStation/blob/master/doc/conf-manual.md
+
+    5.起動/停止
+      EPGStation ディレクトリから
+    5.1 起動
+      $ npm start
+    5.2 停止
+      $ npm stop
+
+    6.自動起動化
+      EPGStation ディレクトリから
+      $ sudo pm2 startup (既に起動されている場合は必要無い)
+      $ sudo pm2 start dist/index.js --name "EPGStation"
+      $ sudo pm2 save
+
+    7.アップデート方法
+      $ sudo pm2 stop EPGStation
+      $ cd /opt/TV_app/EPGStation
+      $ git pull
+      $ sudo npm update
+      $ sudo npm update -D
+      $ sudo npm run build
+      $ sudo pm2 start epgstation
+
+    8.EPGStationブラウザ表示
+      http://localhost:8888/
 
 
-
-  
