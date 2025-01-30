@@ -265,7 +265,63 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     5.pm2のインストール
       $ sudo npm install -g pm2
 
+## 【mirakurun】
+    1.pm2 起動
+      $ sudo pm2 startup
+    2.mirakurun インストール
+      $ sudo npm install mirakurun -g --unsafe --production
+      $ sudo npm install arib-b25-stream-test -g --unsafe
+      注：これは録画アプリでB25解除を行う場合は必要無い
+    3.config 設定
+    3.1 mirakurun停止
+      $ sudo mirakurun stop (またはsudo pm2 stop 起動番号 or mirakurun-server )
+    3.2 設定ファイル編集
+      # cd /usr/local/etc/mirakurun/
+      tuners.yml  :使用するチューナーデバイス、アプリを設定する
+      channels.yml:最新のチャンネル情報に設定する
+      server.yml  :各自の環境に合わせて編集する
+    4.ログファイルの出力先を変えたい場合にシンボリックリンクを設定する
+      例:
+      $ mkdir -p /opt/TV_app/mirakurun/db/mirakurun
+      $ mkdir /opt/TV_app/mirakurun/log
+      $ mkdir /opt/TV_app/mirakurun/run
+      $ cd /usr/local/var
+      $ sudo rm -r db log run
+      $ sudo ln -s /opt/TV_app/mirakurun/db db
+      $ sudo ln -s /opt/TV_app/mirakurun/log log
+      $ sudo ln -s /opt/TV_app/mirakurun/run run
+    5.mirakurun コマンド
+        # 起動
+            $ sudo mirakurun start
+            (またはsudo pm2 start 起動番号 or mirakurun-server )
+        # 停止
+            $ sudo mirakurun stop
+            (またはsudo pm2 stop 起動番号 or mirakurun-server )
+        # 再起動
+            $ sudo mirakurun restart
+            (またはsudo pm2 restart 起動番号 or mirakurun-server )
+        # 確認
+            sudo mirakurun status
+            (またはsudo pm2 status 起動番号 or mirakurun-server )
+        注:pm2をrootで起動すると失敗するのでsudoで実行する
+           $HOME/.pm2/ に設定ファイルがある
+         [PM2][ERROR] script not found : /usr/lib/node_modules/mirakurun/mirakurun-server
+         script not found : /usr/lib/node_modules/mirakurun/mirakurun-server
+    6.環境変数設定及び反映
+      mirakurunから起動するtunerアプリに環境変数を渡す場合
+      /etc/environment に環境変数を設定する (root起動の場合)
 
+      SOFTCASPATH,BSCSCHPATHを追加する例
+        
+        export SOFTCASPATH=/opt/TV_app/config
+        export BSCSCHPATH=/opt/TV_app/config
+
+        リブート後、以下を実行し環境変数を反映する (0 mirakurun 1 EPGStation の場合)
+        $ sudo pm2 restart mirakurun-server EPGStation --update-env
+        $ sudo pm2 save
+
+    7.apiガイド
+       localhost:40772/swagger-ui/?url=/api/docs
 
 
 
