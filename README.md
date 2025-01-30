@@ -392,9 +392,42 @@ EPGStationで使用する為のセットアップを行う
              MariaDB [(none)]> GRANT ALL PRIVILEGES ON epgstation_db.* to epgstation@localhost;
         [確認]
              MariaDB [(none)]> show grants for epgstation@localhost;
+    3.mariadb データディレクトリの変更方法（任意）
+      デフォルトではデータベースは/var/lib/mysql/配下に作成されるが他のディレクトリに移したい場合に設定する
+      ここでは/opt/mariadb_data/に変更することと仮定する
+    3.1 DBサービス停止
+    3.2 変更先ディレクトリ作成 (root)
+        # mkdir -p /opt/mariadb_data
+        # chmod 755 /opt/mariadb_data
+        # chown mysql:mysql /opt/mariadb_data
+    3.3 データコピー
+        # cp -rfp /var/lib/mysql/* /opt/mariadb_data
+    3.4 設定ファイル修正
+        [DBサーバ設定ファイル]
+          /etc/mysql/mariadb.conf.d/50-server.cnf
+          [設定値]
+          [カテゴリ:mysqld]
+            datadir     = /opt/mariadb_data
+            PIDの場所を変える場合
+            pid-file    = /opt/mariadb_data/mysqld.pid
 
+        ソケットの場所を変える場合
+        [設定ファイル]
+          /etc/mysql/mariadb.cnf
+          [カテゴリ:client-server]
+            socket = /opt/mariadb_data/mysqld.sock
 
-
+        データディレクトリを$HOME配下に置く場合
+          /lib/systemd/system/mariadb.serviceも変更
+          [設定値]
+            ProtectHome=false  (60行目あたりにある)
+          変更内容を反映
+            $ sudo systemctl daemon-reload
+    3.5 DBサービス起動 (systemctl start mariadb)
+    3.6 確認
+        # mysql -u root -p
+        MariaDB [(none)]> show variables like 'datadir';
+        MariaDB [(none)]> show variables like 'socket';
 
 ## 【EPGstation】
     1.EPGstation ファイルの取得
@@ -475,7 +508,7 @@ EPGStationで使用する為のセットアップを行う
 予め /tmp をtempfs化しておく
 
     1. /usr/bin に以下の内容のshell script　を作成
-      # vi /usr/bin/mirakurun_epgstation_cache.sh
+       /usr/bin/mirakurun_epgstation_cache.sh
 
 **[ファイルの内容]**
 
@@ -509,7 +542,7 @@ EPGStationで使用する為のセットアップを行う
   \# chmod +x /usr/bin/mirakurun_epgstation_cache.sh
 
     2. systemctl serviceファイルの作成
-      # vi /etc/systemd/system/tv-cache.service
+       /etc/systemd/system/tv-cache.service
 
 **[ファイルの内容]**
 
