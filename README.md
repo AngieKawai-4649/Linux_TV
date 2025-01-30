@@ -198,3 +198,39 @@ PT2,PT3はデフォルトでdvbドライバーがインストールされるの�
     PT3 4 6 がBS/CS 5 7 が地上波
     となる
     リブートして確認する
+
+## 【tunerアプリビルド】
+実行形式ファイルの共有ライブラリリンク状況は以下で確認できる  
+例  $ ldd recfsusb2n
+
+**[recfsusb2n]**
+
+    1. ソースコードの取得
+      $ cd /opt/TV_app
+      $ git clone https://github.com/AngieKawai-4649/recfsusb2n.git
+    ２．ビルド
+      $ cd recfsusb/src
+      $ make [オプション]
+      オプションについてはMakefileのコメントを参照
+
+**[recsanpakun]**
+
+    1. ソースコードの取得
+      $ cd /opt/TV_app
+      $ git clone https://github.com/AngieKawai-4649/recsanpakun.git
+
+    ２．ビルド
+      $ cd recsanpakun/src
+      $ make [オプション]
+      オプションについてはMakefileのコメントを参照
+
+   **[recdvb]**
+
+    1. ソースコードの取得
+      $ cd /opt/TV_app
+      $ git clone https://github.com/AngieKawai-4649/recdvb.git
+    ２．ビルド
+      $ cd recdvb/src
+      $ make [オプション]
+      オプションについてはMakefileのコメントを参照
+
