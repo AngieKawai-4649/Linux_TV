@@ -398,4 +398,75 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     8.EPGStationブラウザ表示
       http://localhost:8888/
 
+## 【mirakurun & EPGStation log tempfs(ramdisk)設定】
+予め /tmp をtempfs化しておく
+
+    1. /usr/bin に以下の内容のshell script　を作成
+      # vi /usr/bin/mirakurun_epgstation_cache.sh
+
+**[ファイルの内容]**
+
+    #! /bin/sh
+    export TV_CACHE_HOME=/tmp/.cache
+
+    # EPGStation log tempfs 設定
+    if [ ! -d "${TV_CACHE_HOME}/EPGStation/logs/Operator" ]; then
+      mkdir -p ${TV_CACHE_HOME}/EPGStation/logs/Operator
+    fi
+    if [ ! -d "${TV_CACHE_HOME}/EPGStation/logs/EPGUpdater" ]; then
+      mkdir -p ${TV_CACHE_HOME}/EPGStation/logs/EPGUpdater
+    fi
+    if [ ! -d "${TV_CACHE_HOME}/EPGStation/logs/Service" ]; then
+      mkdir -p ${TV_CACHE_HOME}/EPGStation/logs/Service
+    fi
+    if [ ! -L "/opt/TV_app/EPGStation/logs" ]; then
+      ln -s ${TV_CACHE_HOME}/EPGStation/logs /opt/TV_app/EPGStation/logs
+    fi
+
+    # Mirakurun log tempfs 設定
+    if [ ! -d "${TV_CACHE_HOME}/mirakurun/log" ]; then
+      mkdir -p ${TV_CACHE_HOME}/mirakurun/log
+    fi
+    if [ ! -L "/usr/local/var/log" ]; then
+      ln -s ${TV_CACHE_HOME}/mirakurun/log /usr/local/var/log
+    fi
+
+
+  ファイル保存後実行ビットを立てる  
+  \# chmod +x /usr/bin/mirakurun_epgstation_cache.sh
+
+    2. systemctl serviceファイルの作成
+      # vi /etc/systemd/system/tv-cache.service
+
+**[ファイルの内容]**
+
+    [Unit]
+    Description=mirakurun and EPGStation log output tempfs
+    Before=network.target
+
+    [Service]
+    ExecStart=/usr/bin/mirakurun_epgstation_cache.sh
+    Type=oneshot
+    RemainAfterExit=yes
+
+    [Install]
+    WantedBy = multi-user.target
+
+
+  ファイル保存後  
+  \# systemctl enable tv-cache.service
+
+    3.既存ディレクトリの削除
+      # rm -r EPGStation/logs
+      EPGStation log dir
+      # rm -r /usr/local/var/log
+      mirakurun log dir
+
+    4. reboot
+      rebootし、tempfsにディレクトリが作成されシンボリックリングされていることを確認
+
+    5. systemd 起動順序を確認
+      $ systemd-analyze plot > systemd.svg
+      systemd.svg をブラウザにドラッグ＆ドロップする
+
 
