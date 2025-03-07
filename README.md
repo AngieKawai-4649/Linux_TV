@@ -315,9 +315,8 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
       mirakurunから起動するtunerアプリに環境変数を渡す場合
       /etc/environment に環境変数を設定する (root起動の場合)
 
-      SOFTCASPATH,BSCSCHPATHを追加する例
-        
-        export SOFTCASPATH=/opt/TV_app/config
+      BSCSCHPATHを追加する例
+    
         export BSCSCHPATH=/opt/TV_app/config
 
         リブート後、以下を実行し環境変数を反映する (0 mirakurun 1 EPGStation の場合)
