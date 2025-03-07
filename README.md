@@ -269,7 +269,11 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     1.pm2 起動
       $ sudo pm2 startup
     2.mirakurun インストール
-      $ sudo npm install mirakurun -g --unsafe --production
+      $ git clone https://github.com/Chinachu/Mirakurun.git
+      $ cd ./Mirakurun
+      $ npm install --production=false
+      $ npm run build
+      $ sudo npm install -g --unsafe-perm --production
       $ sudo npm install arib-b25-stream-test -g --unsafe
       注：これは録画アプリでB25解除を行う場合は必要無い
     3.config 設定
