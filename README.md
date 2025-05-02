@@ -271,18 +271,22 @@ mirakurun EPGStation をインストール前にnodejsをセットアップす�
     2.mirakurun インストール
       $ git clone https://github.com/Chinachu/Mirakurun.git
       $ cd ./Mirakurun
-      $ npm install --production=false
+      $ git submodule update --init --recursive
+      $ npm install
       $ npm run build
-      $ sudo npm install -g --unsafe-perm --production
+      $ sudo pm2 start processes.json
+      $ sudo pm2 save
       $ sudo npm install arib-b25-stream-test -g --unsafe
       注：これは録画アプリでB25解除を行う場合は必要無い
     3.config 設定
     3.1 mirakurun停止
-      $ sudo mirakurun stop (またはsudo pm2 stop 起動番号 or mirakurun-server )
+      $ sudo pm2 stop mirakurun-server
     3.2 設定ファイル編集
       # cd /usr/local/etc/mirakurun/
       tuners.yml  :使用するチューナーデバイス、アプリを設定する
       channels.yml:最新のチャンネル情報に設定する
+      channelconfを導入している時は以下のコマンドで作成可能
+      $ chtool -m > channels.yml
       server.yml  :各自の環境に合わせて編集する
     4.ログファイルの出力先を変えたい場合にシンボリックリンクを設定する
       例:
